@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="actions">
+    <button class="button" (click)="startGame()">{{this.gameIsStarted ? 'Restart': 'Start'}}</button>
+<!--    <button *ngIf="this.gameIsStarted"></button>-->
+  </div>
+  <div class="board">
+    <div class="row" *ngFor="let row of gameData; let rowIndex = index">
+      <div class="cell" *ngFor="let cell of row; let cellIndex = index" (click)="gameIsStarted ? clickOnCell(rowIndex,cellIndex, $event) : null" [ngClass]="{'cell--empty': cell == -1}">
+        {{cell != -1 ? cell : ''}}
+      </div>
+    </div>
+    <img class="board__win" [ngClass]="{'board__win--active' : this.gameWon === 15}" src="assets/meruj.png">
+  </div>
+  <div class="counter">
+    {{time}} s
+  </div>
+  <div class="counter">
+    {{counter}} cells moved
+  </div>
+</div>

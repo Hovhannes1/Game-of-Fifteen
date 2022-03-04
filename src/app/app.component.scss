@@ -1,0 +1,93 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #919191;
+}
+
+.board {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  border-radius: 8px;
+  border: 2px solid darkorange;
+  background-image: url("https://www.myfreetextures.com/wp-content/uploads/2014/10/seamless-wood-background-1.jpg");
+  box-shadow: 2px 2px 8px;
+
+  .board__win {
+    position: absolute;
+    visibility: hidden;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: scale(0.5) rotate(-180deg);
+    transition: all 0.8s linear;
+
+    &.board__win--active {
+      visibility: visible;
+      transform: none;
+    }
+  }
+}
+
+.row {
+  display: flex;
+  height: calc(100% / 4);
+}
+
+.cell {
+  width: calc(25% - 16px);
+  height: calc(100% - 20px);
+  margin: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  border: 2px solid brown;
+  cursor: pointer;
+  border-radius: 8px;
+  background: #ddb692;
+  box-shadow: 1px 1px 8px;
+  user-select: none;
+
+  &.cell--move {
+    transition: all 0.2s linear;
+  }
+
+  &.cell--empty{
+    border: none;
+    background: none;
+    box-shadow: none;
+  }
+}
+.button {
+  display: block;
+  margin-bottom: 24px;
+  padding: 16px 46px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  background-color: #4CAF50; /* Green */
+  cursor: pointer;
+  box-shadow: 0px 0px 4px 4px grey;
+}
+
+.counter {
+  margin-top: 12px;
+  font-size: 20px;
+}
