@@ -22,7 +22,113 @@ export class AppComponent {
   gameWon: number = 0;
   counter: number = 0;
 
-  clickOnCell(rowIndex: number, cellIndex: number, event: any) {
+  // detect arrow up down left right press and move the items in gameData matrix
+  moveDown() {
+    this.counter++;
+    let moved = false;
+    for (let i = 0; i < this.gameData.length; i++) {
+      for (let j = 0; j < this.gameData[i].length; j++) {
+        if (this.gameData[i][j] == -1) {
+          if (i > 0) {
+            this.checkDownWinState(i, j);
+            this.gameData[i][j] = this.gameData[i - 1][j];
+            this.gameData[i - 1][j] = -1;
+            this.checkIncreaseWinState(i - 1, j);
+            moved = true;
+          }
+        }
+      }
+    }
+    if (moved) {
+      this.checkWin();
+    }
+  }
+  moveUp() {
+    this.counter++;
+    let moved = false;
+    for (let i = this.gameData.length - 1; i >= 0; i--) {
+      for (let j = this.gameData[i].length - 1; j >= 0; j--) {
+        if (this.gameData[i][j] == -1) {
+          if (i < this.gameData.length - 1) {
+            this.checkDownWinState(i, j);
+            this.gameData[i][j] = this.gameData[i + 1][j];
+            this.gameData[i + 1][j] = -1;
+            this.checkIncreaseWinState(i + 1, j);
+            moved = true;
+          }
+        }
+      }
+    }
+    if (moved) {
+      this.checkWin();
+    }
+  }
+  moveRight() {
+    this.counter++;
+    let moved = false;
+    for (let i = 0; i < this.gameData.length; i++) {
+      for (let j = 0; j < this.gameData[i].length; j++) {
+        if (this.gameData[i][j] == -1) {
+          if (j > 0) {
+            this.checkDownWinState(i, j);
+            this.gameData[i][j] = this.gameData[i][j - 1];
+            this.gameData[i][j - 1] = -1;
+            this.checkIncreaseWinState(i, j - 1);
+            moved = true;
+          }
+        }
+      }
+    }
+    if (moved) {
+      this.checkWin();
+    }
+  }
+  moveLeft() {
+    this.counter++;
+    let moved = false;
+    for (let i = this.gameData.length - 1; i >= 0; i--) {
+      for (let j = this.gameData[i].length - 1; j >= 0; j--) {
+        if (this.gameData[i][j] == -1) {
+          if (j < this.gameData[i].length - 1) {
+            this.checkDownWinState(i, j);
+            this.gameData[i][j] = this.gameData[i][j + 1];
+            this.gameData[i][j + 1] = -1;
+            // check if gameWon state increases or not
+            this.checkIncreaseWinState(i, j + 1);
+            moved = true;
+          }
+        }
+      }
+    }
+    if (moved) {
+      this.checkWin();
+    }
+  }
+
+  keyDown(event: KeyboardEvent) {
+    if (event.keyCode == 38 && this.gameIsStarted) {
+      this.moveUp();
+    }
+    if (event.keyCode == 40 && this.gameIsStarted) {
+      this.moveDown();
+    }
+    if (event.keyCode == 37 && this.gameIsStarted) {
+      this.moveLeft();
+    }
+    if (event.keyCode == 39 && this.gameIsStarted) {
+      this.moveRight();
+    }
+  }
+
+  // functions to check win state increased or decreased after each move
+  checkDownWinState(i:number,j:number) {
+    if (this.gameData[i][j] === j + 1 + (4 * i)) this.gameWon--;
+  }
+  checkIncreaseWinState(i:number,j:number) {
+    if (this.gameData[i][j] === j + 1 + (4 * i)) this.gameWon++;
+  }
+
+  onCellClick(rowIndex: number, cellIndex: number, event: any) {
     if (this.gameData[rowIndex - 1] && this.gameData[rowIndex - 1][cellIndex]) {
       if (this.gameData[rowIndex - 1][cellIndex] == -1) {
         event.target.style.transform = "translateY(-150px)";
@@ -30,9 +136,9 @@ export class AppComponent {
         setTimeout(() => {
           event.target.classList.remove("cell--move");
           event.target.style.transform = null;
-          if (this.gameData[rowIndex][cellIndex] === cellIndex + 1 + (4 * rowIndex)) this.gameWon--;
+          this.checkDownWinState(rowIndex, cellIndex);
           this.gameData[rowIndex - 1][cellIndex] = this.gameData[rowIndex][cellIndex];
-          if (this.gameData[rowIndex - 1][cellIndex] === cellIndex + 1 + 4 * (rowIndex - 1)) this.gameWon++;
+          this.checkIncreaseWinState(rowIndex - 1, cellIndex);
           this.gameData[rowIndex][cellIndex] = -1;
           this.counter++;
         }, 210)
@@ -45,9 +151,9 @@ export class AppComponent {
         setTimeout(() => {
           event.target.classList.remove("cell--move");
           event.target.style.transform = null;
-          if (this.gameData[rowIndex][cellIndex] === cellIndex + 1 + (4 * rowIndex)) this.gameWon--;
+          this.checkDownWinState(rowIndex, cellIndex);
           this.gameData[rowIndex + 1][cellIndex] = this.gameData[rowIndex][cellIndex];
-          if (this.gameData[rowIndex + 1][cellIndex] === cellIndex + 1 + 4 * (rowIndex + 1)) this.gameWon++;
+          this.checkIncreaseWinState(rowIndex + 1, cellIndex);
           this.gameData[rowIndex][cellIndex] = -1;
           this.counter++;
         }, 210)
@@ -60,9 +166,9 @@ export class AppComponent {
         setTimeout(() => {
           event.target.classList.remove("cell--move");
           event.target.style.transform = null;
-          if (this.gameData[rowIndex][cellIndex] === cellIndex + 1 + (4 * rowIndex)) this.gameWon--;
+          this.checkDownWinState(rowIndex, cellIndex);
           this.gameData[rowIndex][cellIndex - 1] = this.gameData[rowIndex][cellIndex];
-          if (this.gameData[rowIndex][cellIndex - 1] === cellIndex + (4 * rowIndex)) this.gameWon++;
+          this.checkIncreaseWinState(rowIndex, cellIndex - 1);
           this.gameData[rowIndex][cellIndex] = -1;
           this.counter++;
         }, 210)
@@ -75,15 +181,15 @@ export class AppComponent {
         setTimeout(() => {
           event.target.classList.remove("cell--move");
           event.target.style.transform = null;
-          if (this.gameData[rowIndex][cellIndex] === cellIndex + 1 + (4 * rowIndex)) this.gameWon--;
+          this.checkDownWinState(rowIndex, cellIndex);
           this.gameData[rowIndex][cellIndex + 1] = this.gameData[rowIndex][cellIndex];
-          if (this.gameData[rowIndex][cellIndex + 1] === cellIndex + 2 + (4 * rowIndex)) this.gameWon++;
+          this.checkIncreaseWinState(rowIndex, cellIndex + 1);
           this.gameData[rowIndex][cellIndex] = -1;
           this.counter++;
         }, 200)
       }
     }
-    if (this.gameWon === 15) clearInterval(this.timer);
+    this.checkWin();
   }
 
   startGame() {
@@ -124,5 +230,9 @@ export class AppComponent {
       array[top] = tmp;
     }
     return array;
+  }
+
+  private checkWin() {
+    if (this.gameWon === 15) clearInterval(this.timer);
   }
 }

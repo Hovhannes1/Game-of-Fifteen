@@ -1,11 +1,11 @@
-<div class="container">
+<div class="container" (keydown)="this.keyDown($event)">
   <div class="actions">
     <button class="button" (click)="startGame()">{{this.gameIsStarted ? 'Restart': 'Start'}}</button>
 <!--    <button *ngIf="this.gameIsStarted"></button>-->
   </div>
   <div class="board">
     <div class="row" *ngFor="let row of gameData; let rowIndex = index">
-      <div class="cell" *ngFor="let cell of row; let cellIndex = index" (click)="gameIsStarted ? clickOnCell(rowIndex,cellIndex, $event) : null" [ngClass]="{'cell--empty': cell == -1}">
+      <div class="cell" *ngFor="let cell of row; let cellIndex = index" (click)="gameIsStarted ? onCellClick(rowIndex,cellIndex, $event) : null" [ngClass]="{'cell--empty': cell == -1}">
         {{cell != -1 ? cell : ''}}
       </div>
     </div>
